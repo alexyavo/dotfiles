@@ -222,7 +222,10 @@
   :ensure t
   :config
   ;;  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-  (global-display-line-numbers-mode))
+  (global-display-line-numbers-mode)
+  ;; TODO not sure this is the best way to do this but it doesn't work with a simple setq here
+  ;;      not sure if the setq even applies globally or per buffer... ?
+  (add-hook 'display-line-numbers-mode-hook (lambda () (setq display-line-numbers 'relative))))
 
 (use-package default-text-scale
   :ensure t
@@ -341,8 +344,7 @@
                     ("pj" "journal" entry (file+olp+datetree "/home/solyd/notes/journal.org") "* %?")
 
                     ("pp" "project")
-                    ("pp1" "amop" entry (file "/home/solyd/code/mystuff/amop-impl/journal.org") "* %?")
-                    ("pp2" "busybeaverz" entry (file "/home/solyd/code/github/solyd/busy-beaverz/README.org") "* %?")))
+                    ("pp1" "example" entry (file "/path/to/example/journal.org") "* %?")))
 
             (defun org/add-tags-in-capture()
               (interactive)
