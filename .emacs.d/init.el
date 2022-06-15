@@ -1,11 +1,18 @@
 ;; not sure what the optimal value is
 ;;(setq gc-cons-threshold 100000000)
 
-(cond ((eq system-type 'windows-nt) (progn))
-      ((eq system-type 'gnu/linux) (progn))
+(cond ((eq system-type 'windows-nt)
+       (progn
+         (setq my/homedir "C:\\")))
+
+      ((eq system-type 'gnu/linux)
+       (progn
+         (setq my/homedir "~")))
 
       ((eq system-type 'darwin)
        (progn
+         (setq my/homedir "~")
+
          (add-to-list 'exec-path "/usr/local/bin")
          (setq ispell-program-name "/usr/local/bin/aspell") ;; brew install aspell
 
@@ -100,11 +107,8 @@
 (fringe-mode 1)                    ;; numeric value changes width of fringes
 
 
-;; by default, indent with spaces only (no tabs)
-(setq-default indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil) ;; by default, indent with spaces only (no tabs)
 (setq default-tab-width 2)
-(add-hook 'prog-mode-hook (lambda () (setq tab-width 2)))
-(add-hook 'org-mode-hook (lambda () (setq tab-width 2)))
 
 ;; no splash screen (welcome screen)
 (setq inhibit-splash-screen t)
@@ -122,7 +126,6 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (setq-default fill-column 100)
-
 
 ;; Reduce the number of times the bell rings
 ;; Turn off the bell for the listed functions.
@@ -396,8 +399,6 @@
 (use-package server :config (unless (server-running-p) (server-start)))
 (use-package ace-jump-mode :ensure t :bind (("C-c a" . ace-jump-mode)))
 
-(use-package magit :ensure t :bind (("C-c g" . magit)))
-
 (use-package lsp-mode
   :ensure t
   :hook (scala-mode . lsp)
@@ -412,9 +413,15 @@
 
 (use-package lsp-metals :ensure t)
 
+(use-package markdown-mode
+  :ensure t
+  ;; TODO
+;;   :config (setq markdown-fontify-code-block-natively t)
+  )
+
+(use-package magit :ensure t)
 (use-package figlet              :ensure t)
 (use-package iedit               :ensure t)
-(use-package markdown-mode       :ensure t)
 (use-package scala-mode          :ensure t)
 (use-package docker              :ensure t)
 (use-package dockerfile-mode     :ensure t)

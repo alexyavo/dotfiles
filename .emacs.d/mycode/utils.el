@@ -227,4 +227,18 @@ I███████████████████].
   (let ((choice (completing-read "Select: " ascii-sep-list)))
     (insert (cadr (assoc choice ascii-sep-list)))))
 
+(defun join-dirs (root &rest dirs)
+  "akin to python's os.path.join"
+  ;; (joindirs "/tmp" "a" "b")
+  ;; "/tmp/a/b"
+  ;; (joindirs "~" ".emacs.d" "src")
+  ;; "/Users/dbr/.emacs.d/src"
+  ;; (joindirs "~" ".emacs.d" "~tmp")
+  ;; "/Users/dbr/.emacs.d/~tmp"
+  (if (not dirs)
+      root
+    (apply 'join-dirs
+           (expand-file-name (car dirs) root)
+           (cdr dirs))))
+
 (provide 'utils)

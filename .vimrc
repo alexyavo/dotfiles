@@ -6,4 +6,3 @@ set ai
 set relativenumber number
 set path=$PWD/**
 set ignorecase
-
