@@ -1,6 +1,8 @@
 # Install
 
-`cp` should be the GNU variant. 
+run `install.sh`
+
+`cp` should be the GNU variant.
 on macos run `brew install coreutils` and use ` /usr/local/Cellar/coreutils/9.1/bin/gcp`
 
 ```
@@ -14,4 +16,3 @@ cp -rsf "$dotfiles_home"/. ~
 -f: Overwrite existing files (previously created symlinks, default .bashrc, etc)
 /.: Make sure cp "copy" the contents of home instead of the home directory itself.
 ```
-

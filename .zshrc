@@ -6,7 +6,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/yavo/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -113,7 +113,6 @@ export EDITOR='vim'
 # ====================================================================================================
 PROJECT_PATHS=(
     ~/code
-    ~/code/upsolver
 )
 
 # utils
@@ -160,38 +159,11 @@ function gpush {
     git push origin $(eval git branch --show-current)
 }
 
-function github-delete-action-runs {
-    org=Upsolver
-    repo=cli
-
-    # Get workflow IDs with status "disabled_manually"
-    workflow_ids=($(gh api repos/$org/$repo/actions/workflows | jq '.workflows[] | .id'))
-
-    for workflow_id in "${workflow_ids[@]}"
-    do
-        echo "Listing runs for the workflow ID $workflow_id"
-        run_ids=( $(gh api repos/$org/$repo/actions/workflows/$workflow_id/runs --paginate | jq '.workflow_runs[].id') )
-        for run_id in "${run_ids[@]}"
-        do
-            echo "Deleting Run ID $run_id"
-            gh api repos/$org/$repo/actions/runs/$run_id -X DELETE >/dev/null
-        done
-    done
-
-    echo "... Deleting orphaned action runs (those that don't belong to any workflow) ..."
-    run_ids=( $(gh api repos/$org/$repo/actions/runs --paginate | jq '.workflow_runs[].id') )
-    for run_id in "${run_ids[@]}"
-    do
-        echo "Deleting Run ID $run_id"
-        gh api repos/$org/$repo/actions/runs/$run_id -X DELETE >/dev/null
-    done
-}
-
 # emacs
-#export PATH=/usr/local/opt/emacs/bin:$PATH  # emacs 28.1 (standard)
-export PATH=/Applications/Emacs.app/Contents/MacOS/bin:$PATH # emacs 27 (railwaycat fork)
+if [[ `uname` == "Darwin" ]]; then
+    export PATH=/Applications/Emacs.app/Contents/MacOS/bin:$PATH # emacs 27 (railwaycat fork)
+fi
 alias ec="emacsclient -nw"
-# alias ecq="emacsclient -q -nw"
 
 # docker
 alias docker-clean="docker system prune -f"
@@ -202,38 +174,39 @@ alias docker-rm-all='docker stop $(docker ps -aq) && docker rm $(docker ps -aq)'
 alias dcu="docker-compose up"
 alias dcd="docker-compose down"
 
-# useful commands in context of upsolver work
-source ~/.upsolver.zsh
-
-export NVM_DIR="$HOME/.nvm"
 function load-nvm {
+    export NVM_DIR="$HOME/.nvm"
     [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
     #   [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
     nvm use --lts
 }
-#load-nvm
 
-# broot is a fancy file browser https://github.com/Canop/broot
-# source /Users/yavo/.config/broot/launcher/bash/br
+function load-pyenv {
+    eval "$(pyenv init --path)"
+}
 
-eval "$(pyenv init --path)"
-
-# added by Snowflake SnowSQL installer v1.2
-export PATH=/Applications/SnowSQL.app/Contents/MacOS:$PATH
-
-# golang
-export GOPATH=$HOME/go
-export GOROOT="$(brew --prefix golang)/libexec"
-export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
-
-# ruby
-export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
+function load-golang {
+    if [[ `uname` == "Darwin" ]]; then
+        # golang
+        export GOPATH=$HOME/go
+        export GOROOT="$(brew --prefix golang)/libexec"
+        export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
+    fi
+}
 
 function load-sdkman {
-    # i dunno about the comment below...
-    #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-    export SDKMAN_DIR="/Users/yavo/.sdkman"
-    [[ -s "/Users/yavo/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/yavo/.sdkman/bin/sdkman-init.sh"
+    export SDKMAN_DIR="$HOME/.sdkman"
+    [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 }
-load-sdkman
-# load-sdkman
+
+function load-ruby {
+    if [[ `uname` == "Darwin" ]]; then
+        # ruby
+        export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
+    elif [[ `uname` == "Linux" ]]; then
+        # Install Ruby Gems to ~/gems
+        export GEM_HOME="$HOME/gems"
+        export PATH="$HOME/gems/bin:$PATH"
+    fi
+}
+
