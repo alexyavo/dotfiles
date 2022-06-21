@@ -2,6 +2,12 @@
 
 export DOTFILES_HOME=$HOME/dotfiles
 
+if [ "$(uname)" == "Darwin" ]; then
+    cp=/usr/local/opt/coreutils/bin/gcp
+else
+    cp=cp
+fi
+
 # ugh....
 declare -a blacklist=("$DOTFILES_HOME/.git" "$DOTFILES_HOME/README.md" "$DOTFILES_HOME/install.sh")
 
@@ -10,7 +16,7 @@ function maybe-link {
     blacklisted=$(echo ${blacklist[@]} | grep -o "$f" | wc -w)
     if [ "$blacklisted" -eq "0" ]; then
         echo "... linking $f ..."
-        cp -rsf $f ~
+        $cp -rsf $f ~
     fi
 }
 

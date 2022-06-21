@@ -241,4 +241,9 @@ I███████████████████].
            (expand-file-name (car dirs) root)
            (cdr dirs))))
 
+(defun is-running-in-graphic-ui ()
+  (if (equal window-system "mac")
+    t
+    (display-graphic-p)))
+
 (provide 'utils)

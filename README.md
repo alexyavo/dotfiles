@@ -3,7 +3,7 @@
 run `install.sh`
 
 `cp` should be the GNU variant.
-on macos run `brew install coreutils` and use ` /usr/local/Cellar/coreutils/9.1/bin/gcp`
+on macos run `brew install coreutils` and use `/usr/local/opt/coreutils/bin/gcp`
 
 ```
 export dotfiles_home=~/dotfiles

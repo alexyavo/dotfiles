@@ -1,18 +1,20 @@
 ;; not sure what the optimal value is
 ;;(setq gc-cons-threshold 100000000)
 
+(if (eq system-type 'windows-nt)
+    (setq my/homedir "C:\\")
+  (setq my/homedir "~"))
+
 (cond ((eq system-type 'windows-nt)
        (progn
-         (setq my/homedir "C:\\")))
+         ))
 
       ((eq system-type 'gnu/linux)
        (progn
-         (setq my/homedir "~")))
+         ))
 
       ((eq system-type 'darwin)
        (progn
-         (setq my/homedir "~")
-
          (add-to-list 'exec-path "/usr/local/bin")
          (setq ispell-program-name "/usr/local/bin/aspell") ;; brew install aspell
 
@@ -47,6 +49,7 @@
   (package-install 'use-package))
 
 (eval-when-compile (require 'use-package))
+(use-package utils :load-path "mycode")
 
 ;; ================================================================================
 ;; global
@@ -70,8 +73,8 @@
 ;;(use-package darktooth-theme :ensure t :config (load-theme 'darktooth t))
 ;;(use-package color-theme-sanityinc-tomorrow :ensure t :config (load-theme 'sanityinc-tomorrow-night t))
 
-(if (not display-grpahic-p)
-    (set-face-attribute 'default nil :font "Source Code Pro-13"))
+;; (if (not (is-running-in-graphic-ui))
+;;     (set-face-attribute 'default nil :font "Source Code Pro-13"))
 
 (setq create-lockfiles nil) ;; dunno if it's a good idea
 
@@ -87,7 +90,7 @@
 ;; highlight parenthessis
 (show-paren-mode 1)
 
-(if (display-graphic-p)
+(if (is-running-in-graphic-ui)
     (progn
       (scroll-bar-mode -1)
       (fringe-mode 1)
@@ -165,8 +168,6 @@
 ;; ================================================================================
 ;; packages
 ;; ================================================================================
-
-(use-package utils :load-path "mycode")
 
 ;; Makes sure PATH is the same as in the shell
 (use-package exec-path-from-shell
@@ -257,7 +258,7 @@
   :config (progn
             (setq neo-window-fixed-size nil)
             (setq neo-smart-open t)
-            (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
+            (setq neo-theme (if (is-running-in-graphic-ui) 'icons 'arrow)))
   :bind (("<f8>" . 'neotree-toggle)
          :map neotree-mode-map
          ("S" . 'neotree-stretch-toggle)))
@@ -380,11 +381,14 @@
                            slime-asdf
                            slime-banner))))
 
+(use-package poetry :ensure t
+  :hook (python-mode . poetry-tracking-mode))
+
 (use-package lsp-pyright
   :ensure t
   :hook (python-mode . (lambda ()
                          (require 'lsp-pyright)
-                         (lsp))))  ; or lsp-deferred
+                         (lsp-deferred))))  ; or lsp-deferred
 
 (use-package server :config (unless (server-running-p) (server-start)))
 (use-package ace-jump-mode :ensure t :bind (("C-c a" . ace-jump-mode)))
@@ -392,8 +396,9 @@
 (use-package lsp-mode
   :ensure t
   :hook (scala-mode . lsp)
+        (python-mode . lsp-deferred)
         (lsp-mode . lsp-lens-mode)
-        :config (setq lsp-prefer-flymake nil))
+  :config (setq lsp-prefer-flymake nil))
 
 (use-package evil :ensure t
   :init
@@ -434,22 +439,19 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   (quote
-    ("f302eb9c73ead648aecdc1236952b1ceb02a3e7fcd064073fb391c840ef84bca" "9f9fc38446c384a4e909b7220d15bf0c152849ef42f5b1b97356448612c77953" "a9a67b318b7417adbedaab02f05fa679973e9718d9d26075c6235b1f0db703c8" "d7ee1fdb09a671a968b2a751746e5b3f5f26ac1fd475d95d094ee1e4ce446d58" "d14f3df28603e9517eb8fb7518b662d653b25b26e83bd8e129acea042b774298" "6b5c518d1c250a8ce17463b7e435e9e20faa84f3f7defba8b579d4f5925f60c1" "a0be7a38e2de974d1598cf247f607d5c1841dbcef1ccd97cded8bea95a7c7639" "e8df30cd7fb42e56a4efc585540a2e63b0c6eeb9f4dc053373e05d774332fc13" "4b0e826f58b39e2ce2829fab8ca999bcdc076dec35187bf4e9a4b938cb5771dc" "850bb46cc41d8a28669f78b98db04a46053eca663db71a001b40288a9b36796c" "6b1abd26f3e38be1823bd151a96117b288062c6cde5253823539c6926c3bb178" "1704976a1797342a1b4ea7a75bdbb3be1569f4619134341bd5a4c1cfb16abad4" "26e07f80888647204145085c4fed78e0e6652901b62a25de2b8372d71de9c0a1" "97db542a8a1731ef44b60bc97406c1eb7ed4528b0d7296997cbb53969df852d6" "7a7b1d475b42c1a0b61f3b1d1225dd249ffa1abb1b7f726aec59ac7ca3bf4dae" "d2e0c53dbc47b35815315fae5f352afd2c56fa8e69752090990563200daae434" "b7e460a67bcb6cac0a6aadfdc99bdf8bbfca1393da535d4e8945df0648fa95fb" "7661b762556018a44a29477b84757994d8386d6edee909409fabe0631952dad9" "83e0376b5df8d6a3fbdfffb9fb0e8cf41a11799d9471293a810deb7586c131e6" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "43f03c7bf52ec64cdf9f2c5956852be18c69b41c38ab5525d0bedfbd73619b6a" "716f0a8a9370912d9e6659948c2cb139c164b57ef5fda0f337f0f77d47fe9073" "824d07981667fd7d63488756b6d6a4036bae972d26337babf7b56df6e42f2bcd" default)))
+   '("f302eb9c73ead648aecdc1236952b1ceb02a3e7fcd064073fb391c840ef84bca" "9f9fc38446c384a4e909b7220d15bf0c152849ef42f5b1b97356448612c77953" "a9a67b318b7417adbedaab02f05fa679973e9718d9d26075c6235b1f0db703c8" "d7ee1fdb09a671a968b2a751746e5b3f5f26ac1fd475d95d094ee1e4ce446d58" "d14f3df28603e9517eb8fb7518b662d653b25b26e83bd8e129acea042b774298" "6b5c518d1c250a8ce17463b7e435e9e20faa84f3f7defba8b579d4f5925f60c1" "a0be7a38e2de974d1598cf247f607d5c1841dbcef1ccd97cded8bea95a7c7639" "e8df30cd7fb42e56a4efc585540a2e63b0c6eeb9f4dc053373e05d774332fc13" "4b0e826f58b39e2ce2829fab8ca999bcdc076dec35187bf4e9a4b938cb5771dc" "850bb46cc41d8a28669f78b98db04a46053eca663db71a001b40288a9b36796c" "6b1abd26f3e38be1823bd151a96117b288062c6cde5253823539c6926c3bb178" "1704976a1797342a1b4ea7a75bdbb3be1569f4619134341bd5a4c1cfb16abad4" "26e07f80888647204145085c4fed78e0e6652901b62a25de2b8372d71de9c0a1" "97db542a8a1731ef44b60bc97406c1eb7ed4528b0d7296997cbb53969df852d6" "7a7b1d475b42c1a0b61f3b1d1225dd249ffa1abb1b7f726aec59ac7ca3bf4dae" "d2e0c53dbc47b35815315fae5f352afd2c56fa8e69752090990563200daae434" "b7e460a67bcb6cac0a6aadfdc99bdf8bbfca1393da535d4e8945df0648fa95fb" "7661b762556018a44a29477b84757994d8386d6edee909409fabe0631952dad9" "83e0376b5df8d6a3fbdfffb9fb0e8cf41a11799d9471293a810deb7586c131e6" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "43f03c7bf52ec64cdf9f2c5956852be18c69b41c38ab5525d0bedfbd73619b6a" "716f0a8a9370912d9e6659948c2cb139c164b57ef5fda0f337f0f77d47fe9073" "824d07981667fd7d63488756b6d6a4036bae972d26337babf7b56df6e42f2bcd" default))
  '(package-selected-packages
-   (quote
-    (evil lsp-metals lsp-pyright nix-mode edit-indirect arduino-mode smooth-scroll darktooth-theme gruvbox-theme doom-themes color-theme-sanityinc-tomorrow-colors color-theme-sanityinc-tomorrow badger-theme melancholy-theme all-the-icons-dired helm-projectile clojure-mode go-mode all-the-icons lua-mode protobuf-mode terraform-mode groovy-mode docker-compose-mode dockerfile-mode docker scala-mode markdown-mode iedit figlet magit ace-jump-mode slime projectile helm-ag helm-swoop helm json-mode paredit highlight-symbol neotree multiple-cursors ace-window company-quickhelp company default-text-scale exec-path-from-shell dracula-theme use-package)))
+   '(poetry evil lsp-metals lsp-pyright nix-mode edit-indirect arduino-mode smooth-scroll darktooth-theme gruvbox-theme doom-themes color-theme-sanityinc-tomorrow-colors color-theme-sanityinc-tomorrow badger-theme melancholy-theme all-the-icons-dired helm-projectile clojure-mode go-mode all-the-icons lua-mode protobuf-mode terraform-mode groovy-mode docker-compose-mode dockerfile-mode docker scala-mode markdown-mode iedit figlet magit ace-jump-mode slime projectile helm-ag helm-swoop helm json-mode paredit highlight-symbol neotree multiple-cursors ace-window company-quickhelp company default-text-scale exec-path-from-shell dracula-theme use-package))
  '(pos-tip-background-color "#36473A")
  '(pos-tip-foreground-color "#FFFFC8")
  '(safe-local-variable-values
-   (quote
-    ((flycheck-clang-language-standard . "c++11")
+   '((flycheck-clang-language-standard . "c++11")
      (flycheck-gcc-language-standard . "c++11")
      (Package CLOSETTE :USE LISP)
      (Package . CLOSETTE)
      (Syntax . Common-lisp)
      (Base . 10)
-     (Package . NEWCL)))))
+     (Package . NEWCL))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
