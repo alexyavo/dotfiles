@@ -174,15 +174,87 @@ alias docker-rm-all='docker stop $(docker ps -aq) && docker rm $(docker ps -aq)'
 alias dcu="docker-compose up"
 alias dcd="docker-compose down"
 
+function install-nvm {
+    if [[ `uname` == "Darwin" ]]; then
+        brew install nvm
+    elif [[ `uname` == "Linux" ]]; then
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+    fi
+
+    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+    nvm install node # latest
+}
+
 function load-nvm {
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-    #   [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-    nvm use --lts
+    # if [[ `uname` == "Darwin" ]]; then
+    #     export NVM_DIR="$HOME/.nvm"
+    #     [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+    # elif [[ `uname` == "Linux" ]]; then
+    # fi
+    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+    nvm use node
+}
+
+function install-pyenv {
+    if [[ `uname` == "Darwin" ]]; then
+        brew install pyenv
+    elif [[ `uname` == "Linux" ]]; then
+        sudo apt update -y
+        sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+        git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+    fi
 }
 
 function load-pyenv {
-    eval "$(pyenv init --path)"
+    if [[ `uname` == "Linux" ]]; then
+        export PYENV_ROOT="$HOME/.pyenv"
+        export PATH="$PYENV_ROOT/bin:$PATH"
+    fi
+
+    if command -v pyenv 1>/dev/null 2>&1; then
+        eval "$(pyenv init --path)"
+    fi
+
+    # pyenv install 3.10:latest
+    # pyenv global 3.10.?
+}
+
+function build-nvim {
+    sudo apt install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
+    git clone git@github.com:neovim/neovim.git ~/code/neovim
+    cd ~/code/neovim
+    git checkout tags/v0.7.0
+    make CMAKE_BUILD_TYPE=Release
+    sudo make install
+}
+
+function install-nvim {
+    load-pyenv
+    pip install -U pynvim
+    pip install 'python-lsp-server[all]' pylsp-mypy pyls-isort
+
+    load-nvm
+    npm install -g vim-language-server
+
+    if [[ `uname` == "Linux" ]]; then
+        sudo apt -y install universal-ctags ripgrep clangd
+        build-nvim
+    elif [[ `uname` == "Darwin" ]]; then
+        brew install nvim ctags ripgrep llvm
+    fi
+
+    git clone --depth=1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/opt/packer.nvim
+    rm -rf ~/.config/nvim
+    git clone --depth=1 https://github.com/jdhao/nvim-config.git ~/.config/nvim
+
+    # :PackerSync to install then
+}
+
+function load-nvim-deps {
+    load-pyenv
+    load-nvm
 }
 
 function load-golang {
@@ -209,4 +281,3 @@ function load-ruby {
         export PATH="$HOME/gems/bin:$PATH"
     fi
 }
-
