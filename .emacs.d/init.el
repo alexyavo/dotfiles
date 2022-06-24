@@ -70,6 +70,7 @@
 ;; UI
 ;; ================================================================================
 (use-package dracula-theme :ensure t :config (load-theme 'dracula t))
+;; (use-package dracula-theme :ensure t :config (load-theme 'wombat t))
 ;;(use-package darktooth-theme :ensure t :config (load-theme 'darktooth t))
 ;;(use-package color-theme-sanityinc-tomorrow :ensure t :config (load-theme 'sanityinc-tomorrow-night t))
 
