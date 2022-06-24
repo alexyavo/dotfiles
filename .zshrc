@@ -221,6 +221,16 @@ function load-pyenv {
     # pyenv global 3.10.?
 }
 
+function build-emacs {
+    curl -O https://ftp.wayne.edu/gnu/emacs/emacs-28.1.tar.xz
+    tar xfv emacs-28.1.tar.xz
+    cd emacs-28.1
+    sudo apt -y install build-essential gnutls-bin libgnutls28-dev
+    ./configure --with-x-toolkit=no --with-xpm=ifavailable --with-jpeg=ifavailable --with-gif=ifavailable --with-tiff=ifavailable
+    make
+    sudo make install
+}
+
 function build-nvim {
     sudo apt install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
     git clone git@github.com:neovim/neovim.git ~/code/neovim
