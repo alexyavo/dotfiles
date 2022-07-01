@@ -232,6 +232,19 @@ function build-nvim {
     sudo make install
 }
 
+function install-doom {
+    git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.emacs.d
+    ~/.emacs.d/bin/doom install
+    echo "----"
+    echo "now install dotfiles and run doom sync"
+    echo "----"
+    echo "doom sync - when you change packages"
+    echo "doom upgrade"
+    echo "doom doctor"
+    echo "doom env - regenerates file with env vars that emacs uses"
+    echo "doom build - recompile packages (run when changing emacs version)"
+}
+
 function install-nvim {
     load-pyenv
     pip install -U pynvim
