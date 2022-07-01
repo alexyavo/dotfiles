@@ -46,6 +46,9 @@
 
 (global-visual-line-mode t)
 
+(setq-default indent-tabs-mode nil) ;; by default, indent with spaces only (no tabs)
+(setq default-tab-width 2)
+
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
@@ -77,6 +80,10 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+
+;; https://github.com/doomemacs/doomemacs/issues/1642#issuecomment-518711170
+(after! evil-snipe (evil-snipe-mode -1)) ;; give me back my s and S keys bro
 
 (use-package! utils :load-path "mycode")
 
