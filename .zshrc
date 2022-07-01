@@ -81,7 +81,6 @@ ZSH_THEME="tjkirch"
 plugins=(
     git
     fzf
-    pj
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -107,13 +106,6 @@ export EDITOR='vim'
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# pj (Project Jump) zsh plugin conf
-# https://git.esiee.fr/dewaelen/dotfiles/blob/b672fcfc68897e2b4a4d808b52597374064efccb/zsh/oh/plugins/pj/README.md
-# ====================================================================================================
-PROJECT_PATHS=(
-    ~/code
-)
 
 # utils
 alias ll="ls -alhtr"
