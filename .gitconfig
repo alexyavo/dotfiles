@@ -1,0 +1,10 @@
+[user]
+    name = alexyavo
+    email = alxndr.yav@gmail.com
+
+[mergetool "smerge"]
+    cmd = smerge mergetool \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
+    trustExitCode = true
+
+[merge]
+    tool = smerge
