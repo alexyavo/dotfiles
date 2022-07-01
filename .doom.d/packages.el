@@ -51,6 +51,3 @@
 
 (package! evil-terminal-cursor-changer)
 (package! json-reformat)
-(package! poetry)
-(package! dockerfile-mode)
-(package! terraform-mode)
