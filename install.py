@@ -47,6 +47,9 @@ NOOP = NOOPAction()
 class LINKAction(Action):
     def perform(self, f: pathlib.Path) -> None:
         print(f"... linking {f.name}")
+        # -r: Recursive, create the necessary directory for each file
+        # -s: Create symlinks instead of copying
+        # -f: Overwrite existing files (previously created symlinks, default .bashrc, etc)
         res = subprocess.run([get_cp_cmd(), "-rsf", str(f.absolute()), str(pathlib.Path.home())])
         if res.returncode != 0:
             fail(f"failed to link {f.name}, code: {res.returncode}")
