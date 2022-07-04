@@ -1,5 +1,5 @@
 SPC
-    SPC: find file
+    SPC find file in project
     , switch buffer
     . browse files
     : MX
@@ -9,6 +9,7 @@ SPC
     u universal arg
     x pop up scratch
     ~ toggle last popup
+
     TAB workspace
         TAB Display tab bar
         . switch workspace
@@ -24,13 +25,15 @@ SPC
         n workspace
         s save workspace to file
         x kill all buffers'
-    / search
+
+    / search (seems to fuzzy live search across the project, but the commands below cannot be used...)
         i symbols
         I symbols accr. buffers
         b buffer
         d directory
         o Online providers
         p project
+
     [ prev
         S spelling corr
         [ text size
@@ -63,14 +66,16 @@ SPC
         s save buffer
         x pop scratch buffer
         z burry buffer
+
     c code
         d jump to def
         D jump to ref
         e evaluate buffer
         E evaluate and replace
         b build
-        r repl
+        r repl                         (DOESNT WORK? (python))
         x list errors
+
     f file
         . find file
         / find file in project
@@ -183,3 +188,10 @@ SPC
         v vsplit
         w next
         | set width
+
+Dired
+    - go one folder back
+    + create new dir
+    U unselect all
+    ( toggle simple view
+    i (when on a  file name) edit name
