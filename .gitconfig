@@ -8,3 +8,6 @@
 
 [merge]
     tool = smerge
+[core]
+	filemode = false
+	autocrlf = true

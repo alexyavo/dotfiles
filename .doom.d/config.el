@@ -18,6 +18,8 @@
 ;; - `doom-unicode-font' -- for unicode glyphs
 ;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
 ;;
+(setq doom-font (font-spec :family "Source Code Pro Medium" :size 14 :weight 'normal))
+
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
@@ -32,7 +34,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-monokai-classic)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -48,6 +50,8 @@
 
 (setq-default indent-tabs-mode nil) ;; by default, indent with spaces only (no tabs)
 (setq default-tab-width 2)
+
+(setq +evil-want-o/O-to-continue-comments nil)
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -83,20 +87,23 @@
 
 
 ;; https://github.com/doomemacs/doomemacs/issues/1642#issuecomment-518711170
-(after! evil-snipe (evil-snipe-mode -1)) ;; give me back my s and S keys bro
+
+(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
+(remove-hook 'doom-first-input-hook #'evil-snipe-mode)  ;; give me s/S back
+
 
 (use-package! utils :load-path "mycode")
 
 (use-package! server :config (unless (server-running-p) (server-start)))
 
-(use-package! evil-terminal-cursor-changer
-  :init
-  (setq evil-motion-state-cursor 'box)  ; █
-  (setq evil-visual-state-cursor 'box)  ; █
-  (setq evil-normal-state-cursor 'box)  ; █
-  (setq evil-insert-state-cursor 'bar)  ; ⎸
-  (setq evil-emacs-state-cursor  'hbar) ; _
-  :hook (tty-setup . evil-terminal-cursor-changer-activate))
+;; (use-package! evil-terminal-cursor-changer
+;;   :init
+;;   (setq evil-motion-state-cursor 'box)  ; █
+;;   (setq evil-visual-state-cursor 'box)  ; █
+;;   (setq evil-normal-state-cursor 'box)  ; █
+;;   (setq evil-insert-state-cursor 'bar)  ; ⎸
+;;   (setq evil-emacs-state-cursor  'hbar) ; _
+;;   :hook (tty-setup . evil-terminal-cursor-changer-activate))
 
 (use-package dired
   :config (progn
