@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import pathlib
 import subprocess
 import getpass
 from abc import ABC, abstractmethod
+from typing import Optional
 
 
 USE_DOOM_EMACS=True
@@ -59,10 +61,18 @@ LINK = LINKAction()
 
 
 class COPY(Action):
-    def __init__(self, to: str) -> None:
+    def __init__(self, to: str, new_fname: Optional[str] = None) -> None:
         self.to = pathlib.Path(to)
-        if not(self.to.is_dir and self.to.exists()):
-            fail(f'copy dst {self.to.absolute()} must be an existing directory')
+
+        if self.to.exists() and (not self.to.is_dir):
+            fail(f"dst {self.to.absolute()} exists, but is not a directory")
+
+        if not self.to.exists():
+            print(f"creating dst {self.to.absolute()} ...")
+            os.makedirs(self.to.absolute())
+
+        if new_fname is not None:
+            self.to = pathlib.Path(to + "/" + new_fname)
 
     def perform(self, f: pathlib.Path) -> None:
         print(f"... copying {f.name} to {self.to.absolute()}")
@@ -71,8 +81,8 @@ class COPY(Action):
             fail(f"failed to copy {f.name} to {self.to.absolute()}, code: {res.returncode}")
 
 
-def COPY_IF_WSL(to: str) -> Action:
-    return COPY(to) if is_wsl() else NOOP
+def COPY_IF_WSL(*args, **kwargs) -> Action:
+    return COPY(*args, **kwargs) if is_wsl() else NOOP
 
 
 if __name__ == '__main__':
@@ -84,7 +94,7 @@ if __name__ == '__main__':
         "install.sh"            : NOOP,
         ".emacs.d"              : NOOP if USE_DOOM_EMACS else LINK,
         ".doom.d"               : LINK if USE_DOOM_EMACS else NOOP,
-        "alacritty-windows.yml" : COPY_IF_WSL(f"/mnt/c/Users/{USER}/Appdata/Roaming/alacritty/"),
+        "alacritty-windows.yml" : COPY_IF_WSL(f"/mnt/c/Users/{USER}/Appdata/Roaming/alacritty/", "alacritty.yml"),
         ".vsvimrc"              : COPY_IF_WSL(f"/mnt/c/Users/{USER}/"),
     }
 
